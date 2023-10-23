@@ -71,8 +71,6 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun MyScreen(apiService: ApiService) {
 
-        val viewModel: ViewModelScreen by viewModels()
-
 
         var nome by remember { mutableStateOf("") }
         var idade by remember { mutableStateOf("") }
