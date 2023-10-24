@@ -31,6 +31,16 @@ class ViewModelScreen() : ViewModel() {
         }
     }
 
+    fun putClient(codigo:Long, cliente: Cliente) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                apiService.putCliente(codigo, cliente)
+            }catch (e: Exception) {
+
+            }
+        }
+    }
+
      fun getHello() {
         viewModelScope.launch {
             hello = apiService.getHello()

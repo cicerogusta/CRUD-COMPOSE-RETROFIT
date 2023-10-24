@@ -70,6 +70,7 @@ class MainActivity : ComponentActivity() {
 
 
         var nome by remember { mutableStateOf("") }
+        var codigo by remember { mutableStateOf("") }
         var idade by remember { mutableStateOf("") }
         var cidade by remember { mutableStateOf("") }
         var isValidButton by remember { mutableStateOf(false) }
@@ -166,8 +167,12 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
+
                         Button(
-                            onClick = { /* Ação para Alterar */ },
+                            onClick = {
+                                val newCliente = Cliente(codigo.toLong(),  nome=nome, idade =idade.toInt(), cidade = cidade )
+                                newCliente.codigo?.let { clienteViewModel.putClient(it, newCliente) }
+                            },
                         ) {
                             Text(text = "Alterar")
                         }
@@ -209,6 +214,7 @@ class MainActivity : ComponentActivity() {
                                 Text("Cidade: ${cliente.cidade}", fontSize = 16.sp)
                                 Button(
                                     onClick = {
+                                        codigo = cliente.codigo.toString()
                                         nome = cliente.nome
                                         idade = cliente.idade.toString()
                                         cidade = cliente.cidade
