@@ -2,8 +2,6 @@ package com.cicerodev.crudcomposeapp
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -60,7 +58,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             CRUDCOMPOSEAPPTheme {
                 MyScreen(apiService)
-//                ClientListScreen(apiService)
             }
             clienteViewModel.fetchAllClients()
         }
@@ -79,18 +76,31 @@ class MainActivity : ComponentActivity() {
         var clients by remember { mutableStateOf<List<Cliente>>(emptyList()) }
         val coroutineScope = rememberCoroutineScope()
 
-        DisposableEffect(Unit) {
+        fun fetchClientsAndHandleErrors() {
             coroutineScope.launch {
                 val response: Response<List<Cliente>> = apiService.getClientes()
 
                 if (response.isSuccessful) {
                     clients = response.body() ?: emptyList()
                 } else {
+                    // Lidar com erros, se necessário
                 }
             }
-
-            onDispose { }
         }
+
+        // Chame a função para buscar os clientes no início do Composable
+        fetchClientsAndHandleErrors()
+
+        DisposableEffect(Unit) {
+            onDispose { /* Ações de limpeza, se necessário */ }
+        }
+        fun clearFields() {
+            nome = ""
+            idade = ""
+            cidade = ""
+        }
+
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -140,7 +150,13 @@ class MainActivity : ComponentActivity() {
             ) {
                 if (!isValidButton) {
                     Button(
-                        onClick = { /* Ação para Cadastrar */ },
+                        onClick = {
+                            val cliente =
+                                Cliente(nome = nome, idade = idade.toInt(), cidade = cidade)
+                            clienteViewModel.postClient(cliente)
+                            clearFields()
+                            fetchClientsAndHandleErrors()
+                        },
                         modifier = Modifier.padding(16.dp)
                     ) {
                         Text(text = "Cadastrar")
@@ -192,7 +208,12 @@ class MainActivity : ComponentActivity() {
                                 Text("Idade: ${cliente.idade}", fontSize = 16.sp)
                                 Text("Cidade: ${cliente.cidade}", fontSize = 16.sp)
                                 Button(
-                                    onClick = { isValidButton = true },
+                                    onClick = {
+                                        nome = cliente.nome
+                                        idade = cliente.idade.toString()
+                                        cidade = cliente.cidade
+                                        isValidButton = true
+                                    },
                                 ) {
                                     Text(text = "Selecionar")
                                 }
@@ -204,6 +225,8 @@ class MainActivity : ComponentActivity() {
 
 
         }
+
     }
+
 
 }

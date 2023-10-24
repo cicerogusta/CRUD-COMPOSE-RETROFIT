@@ -1,6 +1,5 @@
 package com.cicerodev.crudcomposeapp.connection
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cicerodev.crudcomposeapp.model.Cliente
@@ -18,6 +17,16 @@ class ViewModelScreen() : ViewModel() {
                 apiService.getClientes()
             } catch (e: Exception) {
                 // Lidar com erros aqui
+            }
+        }
+    }
+
+    fun postClient(cliente: Cliente) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+               apiService.postCliente(cliente)
+            }catch (e: Exception) {
+
             }
         }
     }
