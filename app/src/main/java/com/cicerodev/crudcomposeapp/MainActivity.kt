@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -104,10 +105,13 @@ class MainActivity : ComponentActivity() {
 
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxHeight()
                 .background(Color.White)
-                .padding(16.dp)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             Image(
                 painter = painterResource(id = R.drawable.ic_launcher_foreground),
                 contentDescription = "Imagem de perfil",
@@ -117,8 +121,6 @@ class MainActivity : ComponentActivity() {
                 contentScale = ContentScale.Crop
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             TextField(
                 value = nome,
                 onValueChange = { newText ->
@@ -127,23 +129,17 @@ class MainActivity : ComponentActivity() {
                 placeholder = { Text(text = "Nome") }
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             TextField(
                 value = idade,
                 onValueChange = { idade = it },
                 placeholder = { Text(text = "Idade") }
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             TextField(
                 value = cidade,
                 onValueChange = { cidade = it },
                 placeholder = { Text(text = "Cidade") }
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             Box(
                 modifier = Modifier.fillMaxWidth(),
@@ -170,8 +166,18 @@ class MainActivity : ComponentActivity() {
 
                         Button(
                             onClick = {
-                                val newCliente = Cliente(codigo.toLong(),  nome=nome, idade =idade.toInt(), cidade = cidade )
-                                newCliente.codigo?.let { clienteViewModel.putClient(it, newCliente) }
+                                val newCliente = Cliente(
+                                    codigo.toLong(),
+                                    nome = nome,
+                                    idade = idade.toInt(),
+                                    cidade = cidade
+                                )
+                                newCliente.codigo?.let {
+                                    clienteViewModel.putClient(
+                                        it,
+                                        newCliente
+                                    )
+                                }
                             },
                         ) {
                             Text(text = "Alterar")
@@ -192,41 +198,47 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-            LazyColumn {
-                items(clients) { cliente ->
-                    Row(
+
+            if (!isValidButton) {
+
+                    LazyColumn(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                            .fillMaxSize()
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                                .background(Color.White)
-                        ) {
-                            Column(modifier = Modifier.padding(16.dp)) {
-                                Text("Código: ${cliente.codigo}", fontSize = 16.sp)
-                                Text("Nome: ${cliente.nome}", fontSize = 16.sp)
-                                Text("Idade: ${cliente.idade}", fontSize = 16.sp)
-                                Text("Cidade: ${cliente.cidade}", fontSize = 16.sp)
-                                Button(
-                                    onClick = {
-                                        codigo = cliente.codigo.toString()
-                                        nome = cliente.nome
-                                        idade = cliente.idade.toString()
-                                        cidade = cliente.cidade
-                                        isValidButton = true
-                                    },
+                        items(clients) { cliente ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp)
+                                        .background(Color.White)
                                 ) {
-                                    Text(text = "Selecionar")
+                                    Column(modifier = Modifier.padding(16.dp)) {
+                                        Text("Código: ${cliente.codigo}", fontSize = 16.sp)
+                                        Text("Nome: ${cliente.nome}", fontSize = 16.sp)
+                                        Text("Idade: ${cliente.idade}", fontSize = 16.sp)
+                                        Text("Cidade: ${cliente.cidade}", fontSize = 16.sp)
+                                        Button(
+                                            onClick = {
+                                                codigo = cliente.codigo.toString()
+                                                nome = cliente.nome
+                                                idade = cliente.idade.toString()
+                                                cidade = cliente.cidade
+                                                isValidButton = true
+                                            },
+                                        ) {
+                                            Text(text = "Selecionar")
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
-                }
             }
 
 
